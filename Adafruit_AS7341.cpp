@@ -15,6 +15,8 @@
  * 	BSD (see license.txt)
  */
 
+/* Update by P. Chwalek to be compatible for STM32 C++ project (non-Arduino) */
+
 #include "Adafruit_AS7341.h"
 
 /**
