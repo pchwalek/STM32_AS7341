@@ -51,7 +51,7 @@ bool Adafruit_AS7341::begin(uint8_t i2c_address, I2C_HandleTypeDef *i2c_handle,
 		int32_t sensor_id) {
 
 	i2c_han = i2c_handle;
-	i2c_addr = i2c_address;
+	i2c_addr = i2c_address << 1;
 
 	return _init(sensor_id);
 }
