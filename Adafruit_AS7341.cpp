@@ -18,6 +18,7 @@
 /* Update by P. Chwalek to be compatible for STM32 C++ project (non-Arduino) */
 
 #include "Adafruit_AS7341.h"
+#include "cmsis_os2.h"
 
 /**
  * @brief Construct a new Adafruit_AS7341::Adafruit_AS7341 object
@@ -209,7 +210,7 @@ void Adafruit_AS7341::delayForData(uint32_t waitTime) {
 	if (waitTime == 0) // Wait forever
 			{
 		while (!getIsDataReady()) {
-			HAL_Delay(1);
+			osDelay(1);
 		}
 		return;
 	}
@@ -217,7 +218,7 @@ void Adafruit_AS7341::delayForData(uint32_t waitTime) {
 			{
 		uint32_t elapsedMillis = 0;
 		while ((!getIsDataReady()) && (elapsedMillis < waitTime)) {
-			HAL_Delay(1);
+			osDelay(1);
 			elapsedMillis++;
 		}
 		return;
@@ -288,7 +289,7 @@ bool Adafruit_AS7341::enableSMUX(void) {
 											// something is wrong
 	int count = 0;
 	while (!checkRegisterBit(AS7341_ENABLE, 4) && count < timeOut) {
-		HAL_Delay(1);
+		osDelay(1);
 		count++;
 	}
 	if (count >= timeOut)
@@ -837,7 +838,7 @@ uint16_t Adafruit_AS7341::detectFlickerHz(void) {
 	// Enable flicker detection bit
 	writeRegisterByte((uint8_t) AS7341_ENABLE, (uint8_t) 0x41);
 
-	HAL_Delay(500); // SF 2020-08-12 Does this really need to be so long?
+	osDelay(500); // SF 2020-08-12 Does this really need to be so long?
 	uint16_t flicker_status = getFlickerDetectStatus();
 	enableFlickerDetection(false);
 	switch (flicker_status) {
