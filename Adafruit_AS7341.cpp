@@ -287,7 +287,7 @@ bool Adafruit_AS7341::enableSMUX(void) {
 	int timeOut = 1000; // Arbitrary value, but if it takes 1000 milliseconds then
 											// something is wrong
 	int count = 0;
-	while (checkRegisterBit(AS7341_ENABLE, 4) && count < timeOut) {
+	while (!checkRegisterBit(AS7341_ENABLE, 4) && count < timeOut) {
 		HAL_Delay(1);
 		count++;
 	}
