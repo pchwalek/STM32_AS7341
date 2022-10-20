@@ -19,6 +19,7 @@
 
 #include "Adafruit_AS7341.h"
 #include "cmsis_os2.h"
+#include "captivate_config.h"
 
 /**
  * @brief Construct a new Adafruit_AS7341::Adafruit_AS7341 object
@@ -210,7 +211,10 @@ void Adafruit_AS7341::delayForData(uint32_t waitTime) {
 	if (waitTime == 0) // Wait forever
 			{
 		while (!getIsDataReady()) {
-			osDelay(1);
+			osSemaphoreRelease(messageI2C1_LockHandle);
+			osDelay(1); // SF 2020-08-12 Does this really need to be so long?
+			osSemaphoreAcquire(messageI2C1_LockHandle, osWaitForever);
+
 		}
 		return;
 	}
@@ -218,7 +222,9 @@ void Adafruit_AS7341::delayForData(uint32_t waitTime) {
 			{
 		uint32_t elapsedMillis = 0;
 		while ((!getIsDataReady()) && (elapsedMillis < waitTime)) {
-			osDelay(1);
+			osSemaphoreRelease(messageI2C1_LockHandle);
+			osDelay(1); // SF 2020-08-12 Does this really need to be so long?
+			osSemaphoreAcquire(messageI2C1_LockHandle, osWaitForever);
 			elapsedMillis++;
 		}
 		return;
@@ -289,7 +295,9 @@ bool Adafruit_AS7341::enableSMUX(void) {
 											// something is wrong
 	int count = 0;
 	while (!checkRegisterBit(AS7341_ENABLE, 4) && count < timeOut) {
-		osDelay(1);
+		osSemaphoreRelease(messageI2C1_LockHandle);
+		osDelay(1); // SF 2020-08-12 Does this really need to be so long?
+		osSemaphoreAcquire(messageI2C1_LockHandle, osWaitForever);
 		count++;
 	}
 	if (count >= timeOut)
@@ -838,7 +846,10 @@ uint16_t Adafruit_AS7341::detectFlickerHz(void) {
 	// Enable flicker detection bit
 	writeRegisterByte((uint8_t) AS7341_ENABLE, (uint8_t) 0x41);
 
+	osSemaphoreRelease(messageI2C1_LockHandle);
 	osDelay(500); // SF 2020-08-12 Does this really need to be so long?
+	osSemaphoreAcquire(messageI2C1_LockHandle, osWaitForever);
+
 	uint16_t flicker_status = getFlickerDetectStatus();
 	enableFlickerDetection(false);
 	switch (flicker_status) {
