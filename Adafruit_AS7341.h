@@ -284,7 +284,7 @@ extern "C" {
 
 		bool startReading(void);
 		bool checkReadingProgress();
-		bool getAllChannels(uint16_t *readings_buffer);
+		bool getAllChannels(uint32_t *readings_buffer);
 
 		uint16_t detectFlickerHz(void);
 

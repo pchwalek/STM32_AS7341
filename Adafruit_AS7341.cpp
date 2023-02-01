@@ -195,7 +195,7 @@ bool Adafruit_AS7341::checkReadingProgress() {
  *
  * @return true: success false: failure
  */
-bool Adafruit_AS7341::getAllChannels(uint16_t *readings_buffer) {
+bool Adafruit_AS7341::getAllChannels(uint32_t *readings_buffer) {
 	for (int i = 0; i < 12; i++)
 		readings_buffer[i] = _channel_readings[i];
 	return true;
